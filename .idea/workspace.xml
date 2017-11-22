@@ -415,7 +415,7 @@
       <workItem from="1511124236018" duration="536000" />
       <workItem from="1511124943228" duration="3676000" />
       <workItem from="1511131068865" duration="410000" />
-      <workItem from="1511131988005" duration="3084000" />
+      <workItem from="1511131988005" duration="3189000" />
     </task>
     <task id="LOCAL-00001" summary="&quot;Test&quot;">
       <created>1511129071162</created>
@@ -459,11 +459,18 @@
       <option name="project" value="LOCAL" />
       <updated>1511135253686</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="&quot;GitHub zookeeper brought in 2&quot;">
+      <created>1511369292809</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1511369292809</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7706000" />
+    <option name="totallyTimeSpent" value="7811000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -517,7 +524,8 @@
     <MESSAGE value="&quot;Test1&quot;" />
     <MESSAGE value="&quot;Test3&quot;" />
     <MESSAGE value="&quot;GitHub zookeeper brought in&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="&quot;GitHub zookeeper brought in&quot;" />
+    <MESSAGE value="&quot;GitHub zookeeper brought in 2&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="&quot;GitHub zookeeper brought in 2&quot;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
