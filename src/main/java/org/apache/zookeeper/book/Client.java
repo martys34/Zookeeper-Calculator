@@ -53,7 +53,7 @@ public class Client implements Watcher, Closeable {
     }
     
     void startZK() throws IOException {
-        zk = new ZooKeeper(hostPort, 15000, this);
+        zk = new ZooKeeper(hostPort, 2181, this);
     }
     
     public void process(WatchedEvent e) { 

@@ -20,10 +20,7 @@ package org.apache.zookeeper.book;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -55,6 +52,9 @@ public class Worker implements Watcher, Closeable {
     private String serverId = Integer.toHexString((new Random()).nextInt());
     private volatile boolean connected = false;
     private volatile boolean expired = false;
+
+    //to store value
+    private HashMap<String, Integer> values;
     
     /*
      * In general, it is not a good idea to block the callback thread
@@ -74,6 +74,7 @@ public class Worker implements Watcher, Closeable {
                 1000L,
                 TimeUnit.MILLISECONDS,
                 new ArrayBlockingQueue<Runnable>(200));
+        this.values = new HashMap<>();
     }
     
     /**
@@ -82,7 +83,7 @@ public class Worker implements Watcher, Closeable {
      * @throws IOException
      */
     public void startZK() throws IOException {
-        zk = new ZooKeeper(hostPort, 15000, this);
+        zk = new ZooKeeper(hostPort, 2181, this);
     }
     
     /**
@@ -347,8 +348,16 @@ public class Worker implements Watcher, Closeable {
                     
                     public void run() {
                         LOG.info("Executing your task: " + new String(data));
-                        zk.create("/status/" + (String) ctx, "done".getBytes(), Ids.OPEN_ACL_UNSAFE, 
+                        //check what type of task it has to do
+                        String task = new String(data);
+                        if(task.startsWith("store")) {
+                            store(task);
+                        }
+
+                        zk.create("/status/" + (String) ctx, "done".getBytes(), Ids.OPEN_ACL_UNSAFE,
                                 CreateMode.PERSISTENT, taskStatusCreateCallback, null);
+
+
                         zk.delete("/assign/worker-" + serverId + "/" + (String) ctx, 
                                 -1, taskVoidCallback, null);
                     }
@@ -360,6 +369,15 @@ public class Worker implements Watcher, Closeable {
             }
         }
     };
+
+    void store(String task) {
+        String[] keyValues = task.split("\\s*(:)\\s*");
+        for(int i = 1; i < keyValues.length - 1; i += 2) {
+            String key = keyValues[i];
+            Integer value = Integer.parseInt(keyValues[i + 1]);
+            values.put(key, value);
+        }
+    }
     
     StringCallback taskStatusCreateCallback = new StringCallback(){
         public void processResult(int rc, String path, Object ctx, String name) {

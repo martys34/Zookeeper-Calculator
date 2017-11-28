@@ -130,7 +130,7 @@ public class Master implements Watcher, Closeable {
      * @throws IOException
      */
     void startZK() throws IOException {
-        zk = new ZooKeeper(hostPort, 15000, this);
+        zk = new ZooKeeper(hostPort, 2181, this);
     }
 
     /**
@@ -707,21 +707,13 @@ public class Master implements Watcher, Closeable {
                 
                 break;
             case OK:
-                /*
-                 * Choose worker at random.
-                 */
-                List<String> list = workersCache.getList();
-                String designatedWorker = list.get(random.nextInt(list.size()));
-                
-                /*
-                 * Assign task to randomly chosen worker.
-                 */
-                String assignmentPath = "/assign/" + 
-                        designatedWorker + 
-                        "/" + 
-                        (String) ctx;
-                LOG.info( "Assignment path: " + assignmentPath );
-                createAssignment(assignmentPath, data);
+
+                String task = new String(data);
+                if(task.toLowerCase().startsWith("store")) {
+                    store(ctx, data);
+                }
+
+
                 
                 break;
             default:
@@ -730,6 +722,24 @@ public class Master implements Watcher, Closeable {
             }
         }
     };
+
+    void store(Object ctx, byte[] data) {
+        /*
+         * Choose worker at random.
+         */
+        List<String> list = workersCache.getList();
+        String designatedWorker = list.get(random.nextInt(list.size()));
+
+        /*
+         * Assign task to randomly chosen worker.
+         */
+        String assignmentPath = "/assign/" +
+                designatedWorker +
+                "/" +
+                (String) ctx;
+        LOG.info( "Assignment path: " + assignmentPath );
+        createAssignment(assignmentPath, data);
+    }
     
     void createAssignment(String path, byte[] data){
         zk.create(path, 
